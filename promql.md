@@ -116,3 +116,98 @@ avg(prometheus_http_requests_total) by (code)
 avg(prometheus_http_requests_total offset 30m) by (code)
 ```
 
+
+## Functions
+Serve para vericicar se alguma metrica parou de ser enviada para o prometheus.
+
+### absent
+```
+absent(node_cpu_seconds_total{cpu="0", mode="idlaw"})
+```
+Essa retorna=1, por que de fato nao existe, o que temos e mode="idle".
+
+### absent_over_time
+```
+absent_over_time(node_cpu_seconds_total{cpu="0", mode="idlaw"}[30m])
+``` 
+
+### clamp
+Retorna valores em um intervalo.
+```
+clamp(node_cpu_seconds_total, 3584, 5915)
+```
+
+### clamp_max e clamp_min
+Retorna as metricas com valores em determinado campo ate determinado valor de teto, ou a partir desse valor (piso).
+```
+clamp_min(node_cpu_seconds_total, 152522.46)
+```
+
+### abs 
+Converte os valores para seu valor absoluto.
+Exemplo: -5 to 5.
+
+### ceil
+Arredonda um float para o inteiro mais proximo.
+Exemplo: 1.6 -> 2.
+
+### floor
+Corta as casas decimais.
+1.6 -> 1, 2.55 -> 2. 
+
+### day_of_month
+Retorna o dia do mês (1–31) do timestamp da amostra.
+```
+day_of_month(time()) → 7 (se hoje é dia 7).
+```
+
+### day_of_week
+Retorna o dia da semana (0–6), onde 0 = domingo.
+```
+day_of_week(time()) → 2 (se hoje é terça).
+```
+
+### delta
+Calcula a diferença entre o primeiro e o último valor de uma métrica num intervalo.
+```
+delta(node_memory_Active_bytes[5m]) → quanto a memória mudou em 5 min.
+```
+
+### idelta
+Igual ao delta(), mas usa os valores instantâneos, sem corrigir por intervalo irregular (sem interpolação).
+```
+idelta(node_network_receive_bytes_total[1m]) → bytes recebidos no último minuto, direto da diferença bruta.
+```
+
+### sort
+sort(<instant vector>) Sorts elements in ascending order
+
+### sort_desc
+sort_desc(<instant vector>) Sorts elements in ascending order time()
+
+### timeseries
+timeseries(<instant vector>) Return the timestamp of each time series
+
+
+## Aggreations over time
+
+### avg_over_time(<Range vetor>) 
+Return average of itens in a range vector
+
+### sum_over_time(<range vecotr>)
+Return sum of itens in a range vector
+
+### min_over_time(<range vector>)
+Return min item value in a range vector
+
+### max_over_time(<range vector>)
+Return the maximum of itens in a range vector
+
+### count_over_time(<range vector>)
+Return the count of itens in a range vector
+
+node_cpu_seconds_total -> Is a instant vector
+
+````
+avg_over_time(node_cpu_seconds_total[5h])
+```
